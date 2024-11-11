@@ -3,12 +3,12 @@ package desafio.integranf.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "plans")
-public class Plan {
+@Table(name = "plan_histories")
+public class PlanHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,25 +16,22 @@ public class Plan {
     private String name;
     private BigDecimal monthlyCost;
     private Integer yearlyInvoiceLimit;
-    private Boolean isDiscontinued;
+    private LocalDate modifiedDate;
 
-    @OneToMany(mappedBy = "plan")
-    private List<Subscription> subscriptions;
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private Plan plan;
 
-    @OneToMany(mappedBy = "plan")
-    private List<PlanHistory> planHistories;
-
-    public Plan() {
+    public PlanHistory() {
     }
 
-    public Plan(Long id, String name, BigDecimal monthlyCost, Integer yearlyInvoiceLimit, Boolean isDiscontinued, List<Subscription> subscriptions, List<PlanHistory> planHistories) {
+    public PlanHistory(Long id, String name, BigDecimal monthlyCost, Integer yearlyInvoiceLimit, LocalDate modifiedDate, Plan plan) {
         this.id = id;
         this.name = name;
         this.monthlyCost = monthlyCost;
         this.yearlyInvoiceLimit = yearlyInvoiceLimit;
-        this.isDiscontinued = isDiscontinued;
-        this.subscriptions = subscriptions;
-        this.planHistories = planHistories;
+        this.modifiedDate = modifiedDate;
+        this.plan = plan;
     }
 
     public Long getId() {
@@ -69,36 +66,28 @@ public class Plan {
         this.yearlyInvoiceLimit = yearlyInvoiceLimit;
     }
 
-    public Boolean getDiscontinued() {
-        return isDiscontinued;
+    public LocalDate getModifiedDate() {
+        return modifiedDate;
     }
 
-    public void setDiscontinued(Boolean discontinued) {
-        isDiscontinued = discontinued;
+    public void setModifiedDate(LocalDate modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
+    public Plan getPlan() {
+        return plan;
     }
 
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
-    public List<PlanHistory> getPlanHistories() {
-        return planHistories;
-    }
-
-    public void setPlanHistories(List<PlanHistory> planHistories) {
-        this.planHistories = planHistories;
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Plan plan = (Plan) o;
-        return Objects.equals(id, plan.id);
+        PlanHistory that = (PlanHistory) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
